@@ -1,0 +1,40 @@
+      .data
+array:.word    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+blank:.asciiz  " "          
+head: .asciiz  "The first 20 Fibonacci numbers are:"
+      .text
+      la   $a0, array       # load array base address
+      li   $a1, 20          # hardcode array size 20
+      li   $t0, 1           # 1 is F(0), first Fib. number
+      sw   $t0, 0($a0)      # F[0] = 1
+      sw   $t0, 4($a0)      # F[1] = F[0] = 1
+      add  $t0, $zero, $a0  # copy of array address
+      addi $t1, $a1, -2     # loop counter;(size-2) repetitions
+loop: lw   $t3, 0($t0)      # Get value from array F[n] 
+      lw   $t4, 4($t0)      # Get value from array F[n+1]
+      add  $t2, $t3, $t4    # $t2 = F[n] + F[n+1]
+      sw   $t2, 8($t0)      # Store F[n+2] = F[n] + F[n+1]
+      addi $t0, $t0, 4      # increment address of Fib. Number
+      addi $t1, $t1, -1     # decrement loop counter
+      bgtz $t1, loop        # repeat if not finished yet.
+      jal  out              # call print routine. 
+      li   $v0, 10          # system call for exit
+      syscall               # we are out of here.      
+ 
+#########  subroutine to print the 20 numbers. 
+ 
+out:  add  $t0, $zero, $a0  # starting address of array
+      add  $t1, $zero, $a1  # initialize loop counter
+      la   $a0, head        # load address of heading for syscall
+      li   $v0, 4           # specify Print String service
+      syscall               # print the heading
+print:lw   $a0, 0($t0)      # load fibonacci number for syscall
+      li   $v0, 1           # specify Print Integer service
+      syscall               # print fibonacci number
+      la   $a0, blank       # load address of spacer for syscall
+      li   $v0, 4           # specify Print String service
+      syscall               # print spacer string
+      addi $t0, $t0, 4      # increment array address
+      addi $t1, $t1, -1     # decrement loop counter
+      bgtz $t1, print       # repeat if not finished
+      jr   $ra              # return

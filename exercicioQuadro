@@ -1,0 +1,77 @@
+		.data
+vec:		.space 60
+		.text
+ 		.globl main
+ 		
+main:		addi $t0, $t0, 0	#t0=n
+		jal bar
+		move $t0, $v0
+		li $v0, 1
+		move $a0, $t0
+		syscall
+		li $v0, 10
+		syscall
+ 		
+bar: 		add $s0, $s0, $0	#s0=i
+		addi $s1, $s1, 0	#s1=j
+		add $s2, $s2, $0	#s2=s
+		addi $sp,$sp,-16
+		sw $ra,0($sp)
+		sw $s0,4($sp)
+		sw $s1,8($sp)
+		sw $s2,12($sp)
+		
+L1:		li $s1, 10
+L2:		beq $s1, $0, End2
+		move $a0, $s0
+		sub $t0, $s1, $s0
+		move $a1, $t0
+		jal foo
+		add $s2, $s2, $v0
+		addi $s1, $s1, -2
+		j L2
+		addi $s0, $s0, 1
+		slti $t1, $s0, 15 	
+		beq $t1, $1, L2
+End2:		move $v0, $s2
+		lw $ra,0($sp)
+		lw $s0,4($sp)
+		lw $s1,8($sp)
+		lw $s2,12($sp)
+		addi $sp,$sp,16
+		jr $ra
+		
+foo: 		addi $sp,$sp,-8
+		sw $s0,0($sp)
+		sw $s1,4($sp)
+		move $s0, $a0		#a
+		move $s1, $a1		#b
+		slt $t2,$s0, $s1
+		beq $t2, $0, Endf
+		la $t3, vec
+		sll $t4, $s0, 2
+		add $t3, $t3, $t4
+		lw $t6, 0($t3)
+		add $t5, $s1, $s1
+		sub $t5, $s0, $t5
+		add $t6, $t6, $t5
+		sw $t6, 0($t3)
+		move $v0, $t6
+		lw $s0,0($sp)
+		lw $s1,4($sp)
+		addi $sp,$sp,8
+		jr $ra
+			
+Endf: 		la $t3, vec # else
+		sll $t4, $s0, 2
+		add $t3, $t3, $t4
+		lw $t6, 0($t3)
+		mul $t5, $s0, 2
+		add $t5, $t5, $s1
+		add $t6, $t6, $t5
+		sw $t6, 0($t3)
+		move $v0, $t6
+		lw $s0,0($sp)
+		lw $s1,4($sp)
+		addi $sp,$sp,8
+		jr $ra

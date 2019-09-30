@@ -1,0 +1,70 @@
+		.data
+f:		.space 20
+		.text
+		.globl main
+		
+main: 		li $s0, 0 	#s0= n
+		li $s1, 0	#s1= i
+		li $v0, 5
+		syscall
+		move $s0, $v0
+		slti $t0, $s0, 20
+		beq $t0, $0, End
+		move $a0, $s0
+		jal funct
+		li $v0, 10
+		syscall
+End: 		li $v0, 10
+		syscall
+		
+funct: 		addi $sp,$sp,-16
+		sw $ra,0($sp)
+		sw $s0,4($sp)  
+		sw $s1,8($sp)
+		sw $a0,12($sp)
+		move $s0, $a0	#s0= n
+		li $s1, 2	#s1= i =2
+		la $t0, f
+		li $t1, 0
+		li $t2, 1
+		sw $t1, 0($t0)
+		sw $t2, 4($t0) 
+L1:		slt $t3, $s1, $s0
+		bne $t3, $0, End1
+		move $a0, $s1
+		jal fibonacci
+		sll $t4, $s1, 2
+		add $t0, $t0, $t4
+		sw $v0, 0($t0)
+		addi $s1, $s1, 1
+		j L1
+End1:		lw $ra,0($sp)
+		lw $s0,4($sp)
+		lw $s1,8($sp)
+		lw $a0,12($sp)
+		addi $sp,$sp,16
+		jr $ra
+		
+fibonacci:	addi $sp,$sp,-16
+		sw $ra,0($sp)
+		sw $s0,4($sp)  
+		sw $s1,8($sp)
+		sw $a0,12($sp)
+		li $s0, 1	#i
+		li $s1, 0	#j
+		li $s3, 1	#k
+		li $s4, 0	#t
+L2:		slt $t5, $s3, $a0
+		bne $t5, $0, End2
+		add $s4, $s0, $s1
+		add $s0, $s1, $0
+		add $s1, $s4, $0
+		addi $s3, $s3, 1
+		j L2
+End2:		move $v0, $s1
+		lw $ra,0($sp)
+		lw $s0,4($sp)  
+		lw $s1,8($sp)
+		lw $a0,12($sp)
+		addi $sp,$sp,16
+		jr $ra

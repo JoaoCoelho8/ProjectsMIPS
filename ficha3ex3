@@ -1,0 +1,61 @@
+		.data
+MSG1:		.asciiz "Indique um número inteiro positivo: "
+MSG2:		.asciiz "O factorial (iterativo) é: "
+MSG3:		.asciiz " O factorial (recursivo) é: "
+		.text
+	
+Main:		li $s0,0
+		li $s1,0
+		li $s2,0
+		
+		li $v0,4
+		la $a0,MSG1
+		syscall
+ 		li $v0,5 
+ 		syscall	
+ 		move $s0,$v0
+ 		move $a0,$s0
+ 		jal fact_iter
+ 		add $s1,$0,$v0
+ 		
+ 		jal fact_recu
+ 		add $s2,$s2,$v0
+ 		li $v0,4
+		la $a0,MSG2
+		syscall
+		li $v0,1
+ 		move $a0, $s1 
+ 		syscall	
+ 		li $v0,4
+		la $a0,MSG3
+		syscall
+		li $v0,1
+ 		move $a0, $s2
+ 		syscall	
+ Exit:		li $v0,10
+ 		syscall
+ 		
+ 		
+fact_recu:	beq $a0,$0,base
+		addi $sp,$sp,-8
+		sw $ra,0($sp)
+		sw $a0,4($sp)
+		addi $a0,$a0,-1
+		jal fact_recu
+		lw $ra,0($sp)
+		lw $a0,4($sp)
+		addi $sp,$sp,8
+		mul $v0,$v0,$a0
+		jr $ra
+base:		li $v0,1
+		jr $ra
+		
+  
+fact_iter:	add $t0,$t0,$a0		#t0=i
+		addi $t1,$0,1		#t1=s=1
+L1:		beq $t0,0,End
+		mul $t1,$t1,$t0
+		addi $t0,$t0,-1
+		j L1
+End:		move $v0, $t1
+		jr $ra

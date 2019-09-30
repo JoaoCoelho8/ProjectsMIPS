@@ -1,0 +1,48 @@
+	.data
+	
+MSG1: 	.asciiz "Indique o primeiro número => "
+MSG2: 	.asciiz "Indique o segundo número => "
+SUM: 	.asciiz "Soma = "
+SUB: 	.asciiz "Diferença = "
+
+ 	.align 2 		#define o tipo de informação para tipo word
+ 	
+INPUT1: .space 4 		#reserva 4 bytes para o imput 1
+INPUT2: .space 4 		#reserva 4 bytes para o imput 2
+
+ 	.text
+ 	.globl main
+
+main: 	li $v0,4 		#guarda 4 em v0
+ 	la $a0, MSG1
+ 	syscall			#imprime msg1
+ 	li $v0,5 		#guarda 5 em v0
+ 	syscall			#ler um inteiro
+ 	la $t5, INPUT1		#carrega para t5 o registo de memoria onde começa o espaço reservado 
+ 	sw $v0, 0($t5) 		#guarda  v0 para dentro de t5
+ 	li $v0,4 		#guarda 4 em v0
+ 	la $a0, MSG2
+ 	syscall			#imprime msg2
+ 	li $v0,5 		#guarda 5 em v0
+ 	syscall			#lê o segundo numero introduzido 
+ 	la $t6, INPUT2		#carrega para t6 o registo de memoria 
+	sw $v0, 0($t6) 		#guarda  v0 para dentro de t6
+ 	lw $t0, 0($t5) 		#retira o que esta em t5 e guarda em t0
+ 	lw $t1, 0($t6)		#retira o que esta em t6 e guarda em t1
+ 	li $v0,4 		#guarda 4 em v0 
+ 	la $a0, SUM
+ 	syscall			#imprime sum
+ 	add $t3, $t0, $t1 	#soma os valores de t0 e t1
+ 	li $v0,1 		#guarda 1 em v0
+ 	move $a0, $t3 		#move para a0 o que esta em t3
+ 	syscall			#imprime a valor da soma
+ 	li $v0,4		#guarda 4 em v0
+ 	la $a0, SUB
+ 	syscall			#imprime sub
+ 	sub $t4, $t0, $t1	#subtrai os valores de t0 e t1
+ 	li $v0,1 		#guarda 1 em v0
+ 	move $a0, $t4 		#move para a0 o conteudo de t4
+ 	syscall			#imprime o valor da sub
+ Exit:
+ 	li $v0,10 		#guarda 10 em v0
+ 	syscall			#termina o programa

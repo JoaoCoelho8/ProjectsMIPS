@@ -1,0 +1,20 @@
+ 		.data
+ZERO: 		.float 0.0
+UPPER:		.float 300.0
+STEP:		.float 20.0
+ 		.text
+ 		.globl main
+ 		
+main:		lwc1 $f1,ZERO		# fahr
+		lwc1 $f2,ZERO		# celsius
+		lwc1 $f3,ZERO		# lower
+		lwc1 $f4,UPPER		# upper
+		lwc1 $f5,STEP		# step
+		
+		.
+		.
+		.
+		.
+		.
+		.
+		

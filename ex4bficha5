@@ -1,0 +1,75 @@
+ 		.data
+MSG1: 		.asciiz "Quantos valores pretende introduzir? => "
+MSG2: 		.asciiz "Indique um valor => "
+MSG3: 		.asciiz "Indique um valor => "
+MSG4:		.asciiz "\nMax: "
+MSG5:		.asciiz "\nMin: "
+MSG6:		.asciiz "\nMedia: "
+ZERO: 		.float 0.0
+ 		.text
+ 		.globl main
+ 		
+main: 		li $s0, 0		# i
+		li $s1, 0		# numTotal
+		lwc1 $f1,ZERO		# min
+		lwc1 $f2,ZERO		# max
+		lwc1 $f3,ZERO		# sum
+		lwc1 $f4,ZERO		# num
+		li $v0,4 		# Imprime MSG1
+ 		la $a0,MSG1
+ 		syscall
+ 		li $v0,5		# lê o número de valores
+ 		syscall
+ 		move $s1, $v0
+ 		li $v0,4 		# Imprime MSG2
+ 		la $a0,MSG2
+ 		syscall
+ 		li $v0,6		# lê o número de valores
+ 		syscall
+ 		mov.s $f4, $f0
+ 		add.s $f3, $f3, $f4
+ 		mov.s $f1, $f4
+ 		mov.s $f2, $f4
+ 		addi $s1, $s1, -1
+Loop:		slt $t1, $s0, $s1
+ 		beq $t1, $0, End
+ 		li $v0,4 		# Imprime MSG3
+ 		la $a0,MSG3
+ 		syscall
+ 		li $v0,6 		# Chamada para ler um "float"
+ 		syscall
+ 		mov.s $f4, $f0
+ 		c.lt.s $f1, $f4		#a flag0 fica a 1
+ 		bc1t NEXT 		# Se a flag0 está a 1 salta para NEXT
+ 		mov.s $f1, $f4
+NEXT:		c.lt.s $f4, $f2		#a flag0 fica a 1
+ 		bc1t NEXT1		# Se a flag0 está a 1 salta para NEXT
+ 		mov.s $f2, $f4
+NEXT1:		add.s $f3, $f3, $f4
+		addi $s0, $s0, 1
+		j Loop
+End:		li $v0,4 		# Imprime MSG4
+ 		la $a0,MSG4
+ 		syscall
+		li $v0,2 		# imprimir o "float" com o resultado
+ 		mov.s $f12, $f2 	# copia o valor para o $f12
+ 		syscall
+ 		li $v0,4 		# Imprime MSG5
+ 		la $a0,MSG5
+ 		syscall
+		li $v0,2 		# imprimir o "float" com o resultado
+ 		mov.s $f12, $f1		# copia o valor para o $f12
+ 		syscall
+ 		li $v0,4 		# Imprime MSG6
+ 		la $a0,MSG6
+ 		syscall
+ 		addi $s1, $s1, 1
+ 		mtc1 $s1,$f5		# copia $S0 para $f1 no coproce. 1
+ 		cvt.s.w $f5, $f5 	# converte o INT em $f1 para VF em $f1
+ 		div.s $f6, $f3, $f5
+		li $v0,2 		# imprimir o "float" com o resultado
+ 		mov.s $f12, $f6 	# copia o valor para o $f12
+ 		syscall
+ 		li $v0,10 # Chamada 10; exit
+ 		syscall
+ 		
