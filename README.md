@@ -1,2 +1,2 @@
 # ProjectsMIPS
-Computer Architecture course worksheets
+"Computer Architecture" course worksheets
