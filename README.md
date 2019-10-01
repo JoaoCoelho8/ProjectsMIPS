@@ -1,3 +1,3 @@
 # ProjectsMIPS
 Computer Architecture course worksheets
-Trabalhos de aula da disciplina "Arquitetura de Computadores"
+<br>Trabalhos de aula da disciplina "Arquitetura de Computadores"
